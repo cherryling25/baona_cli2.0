@@ -60,7 +60,12 @@ export default new Router({
           {
             path: "/sellerCenter",
             name: "sellerCenter",
-            component: () => import('../components/sellerCenter.vue')
+            component: () => import('../components/sellerCenter/sellerCenter.vue')
+          },
+          {
+            path: "/rechargePrincipal",
+            name: "rechargePrincipal",
+            component: () => import('../components/sellerCenter/rechargePrincipal.vue')
           }
         ]
     }

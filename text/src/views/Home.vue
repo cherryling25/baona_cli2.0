@@ -118,50 +118,17 @@
       <el-container>
         <el-header>
           <el-row>
-            <el-col :span="2" :offset="3"
-              ><div class="grid-content ">
-                <span class="headTitle">首页</span>
-                </div
-            ></el-col>
-            <el-col :span="2"
-              ><div class="grid-content ">
-                <span>邀请返利</span>
-                </div
-            ></el-col>
-            <el-col :span="2"
-              ><div class="grid-content ">
-                <span>发布任务</span>
-                </div
-            ></el-col>
-            
-            <router-link to="/sellerCenter">
-            <el-col :span="2"
-              >
-              <div class="grid-content ">
-                <span>卖家中心</span>
-                </div
-            ></el-col>
-             </router-link>
-
-            <el-col :span="2"
-              ><div class="grid-content ">
-                <span>淘宝站</span>
-                </div
-            ></el-col>
-            <el-col :span="2"
-              ><div class="grid-content ">
-                <span>京东站</span>
-                </div
-            ></el-col>
-
-            <!-- <el-col :span="5" :offset="3"
-              ><div class="grid-content">
-                <el-input
-                  v-model="searchKey"
-                  placeholder="请输入内容"
-                  prefix-icon="el-icon-search"
-                ></el-input></div
-            ></el-col> -->
+             <el-col :span="12" :offset="3">
+                <el-tabs v-model="activeName" @tab-click="handleClick">
+                  <el-tab-pane label="首页" name="first">
+                  </el-tab-pane>
+                  <el-tab-pane label="邀请返利" name="second">
+                  </el-tab-pane>
+                  <el-tab-pane label="发布任务" name="third"></el-tab-pane>
+                  <el-tab-pane label="卖家中心" name="fourth"></el-tab-pane>
+                </el-tabs>
+            </el-col>
+    
             <el-col :span="2" :offset="6"
               ><div class="grid-content">
                 <div style="display:flex;justify-content: space-around;">
@@ -205,7 +172,7 @@ export default {
   name: "Home",
   data() {
     return {
-      searchKey: "",
+       activeName: 'second'
     };
   },
   methods: {
@@ -216,6 +183,19 @@ export default {
       }).catch(()=>{
 
       });
+    },
+    // 切换tab
+    handleClick(tab, event) {
+      console.log(tab, event);
+      if(tab.name == 'second'){
+          this.$router.push("/invite");
+
+      }else if(tab.name == 'third'){
+        this.$router.push("/publish");
+
+      }else if(tab.name == 'fourth'){
+        this.$router.push("/sellerCenter");
+      }
     }
   },
   components: {
