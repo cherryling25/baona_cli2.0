@@ -55,7 +55,22 @@ export default new Router({
           {
             path: "/publish",
             name: "publish",
-            component: () => import('../components/publish.vue')
+            component: () => import('../components/publish/publish.vue')
+          },
+          {
+            path: "/pay",
+            name: "pay",
+            component: () => import('../components/publish/pay.vue')
+          },
+          {
+            path: "/succeed",
+            name: "succeed",
+            component: () => import('../components/publish/succeed.vue')
+          },
+          {
+            path: "/taskInfo",
+            name: "taskInfo",
+            component: () => import('../components/publish/taskInfo.vue')
           },
           {
             path: "/sellerCenter",

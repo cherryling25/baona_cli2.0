@@ -202,7 +202,7 @@ export default {
 
   },
   created(){
-    console.log(this.GLOBAL.id)
+    console.log(this.GLOBAL.userId)
   }
 };
 </script>

@@ -173,12 +173,27 @@ export default {
         },
         method: "post",
         data: Qs.stringify({
-          phone: "15226371822"
+          phone: this.registerForm.userphone
         }),
-        url: "http://www.bn.com/index.php/index/Login/phone_sms"
+
+        url: this.GLOBAL.hostUrl5 +"index/Login/phone_sms"
       }).then(res => {
         console.log(res);
       });
+
+
+      // axios({
+      //   headers: {
+      //     "Content-Type": "application/x-www-form-urlencoded"
+      //   },
+      //   method: "post",
+      //   data: Qs.stringify({
+      //     phone: "15226371822"
+      //   }),
+      //   url: "http://www.bn.com/index.php/index/Login/phone_sms"
+      // }).then(res => {
+      //   console.log(res);
+      // });
     },
     getCode() {
       const TIME_COUNT = 60;
@@ -243,37 +258,35 @@ export default {
       if (!this.registerValidate()) {
         return;
       }
+      axios({
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        method: "post",
+        data: Qs.stringify({
+          people_id: this.registerForm.invite,
+          phone: this.registerForm.userphone,
+          // "captcha":this.registerForm.checkPass,
+          phone_code: this.registerForm.msgInput,
+          wechat_number: this.registerForm.wxNumber,
+          pwd: this.registerForm.password,
+          pwd_2: this.registerForm.checkPass
+        }),
 
-      // axios({
-      //   headers: {
-      //     "Content-Type": "application/x-www-form-urlencoded"
-      //   },
-      //   method: "post",
-      //   data: Qs.stringify({
-      //     people_id: this.registerForm.invite,
-      //     phone: this.registerForm.userphone,
-      //     // "captcha":this.registerForm.checkPass,
-      //     phone_code: this.registerForm.msgInput,
-      //     wechat_number: this.registerForm.wxNumber,
-      //     pwd: this.registerForm.password,
-      //     pwd_2: this.registerForm.checkPass
-      //   }),
-
-      //   url: "http://www.bn.com/index.php/index/Login/registered"
-      // }).then(res => {
-      //   console.log(res);
-      //   if (res) {
-      //     this.$notify({
-      //       message: "注册成功",
-      //       type: "success"
-      //     });
-      //     this.dialogFormVisible = false;
-      //   } else {
-      //     this.$notify.error({
-      //       message: "注册失败"
-      //     });
-      //   }
-      // });
+        url: this.GLOBAL.hostUrl5 +"index/Login/registered"
+      }).then(res => {
+        if (res.data.code == 1 || res.data.code == "1") {
+         this.$notify({
+            message: "注册成功",
+            type: "success"
+          });
+          this.dialogFormVisible = false;
+        } else {
+          this.$notify.error({
+            message: "注册失败"
+          });
+        }
+      });
     },
     // 登录验证
     validate() {
@@ -309,7 +322,7 @@ export default {
         url: this.GLOBAL.hostUrl5 +"index/Login/login"
       }).then(res => {
         if (res.data.code == 1 || res.data.code == "1") {
-          this.GLOBAL.id= res.data.data.id
+          this.GLOBAL.userId= res.data.data.id
           this.$router.push({
             path: "../orderManage"
           });

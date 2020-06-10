@@ -39,8 +39,7 @@
         <el-form :model="addShopForm">
           <el-form-item label="平台" label-width="120px">
             <el-select v-model="addShopForm.platform" placeholder="请选择">
-              <el-option label="区域一" value="shanghai"></el-option>
-              <el-option label="区域二" value="beijing"></el-option>
+              <el-option label="拼多多" value="pingduoduo"></el-option>
             </el-select>
           </el-form-item>
 
@@ -54,49 +53,19 @@
 
           <el-form-item label="拼多多商家后台登陆页面" label-width="120px">
             <el-upload
-              action="#"
-              list-type="picture-card"
-              :auto-upload="false">
-                <i slot="default" class="el-icon-plus"></i>
-                <div slot="file" slot-scope="{file}">
-                  <img
-                    class="el-upload-list__item-thumbnail"
-                    :src="file.url" alt=""
-                  >
-                  <span class="el-upload-list__item-actions">
-                    <span
-                      class="el-upload-list__item-preview"
-                      @click="handlePictureCardPreview(file)"
-                    >
-                      <i class="el-icon-zoom-in"></i>
-                    </span>
-                    <span
-                      v-if="!disabled"
-                      class="el-upload-list__item-delete"
-                      @click="handleDownload(file)"
-                    >
-                      <i class="el-icon-download"></i>
-                    </span>
-                    <span
-                      v-if="!disabled"
-                      class="el-upload-list__item-delete"
-                      @click="handleRemove(file)"
-                    >
-                      <i class="el-icon-delete"></i>
-                    </span>
-                  </span>
-                </div>
+              class="avatar-uploader"
+              action="http://www.bn.com/index.php/index/Store/img"
+              :show-file-list="false"
+              :on-success="handleAvatarSuccess">
+              <img v-if="addShopForm.imageUrl" :src="addShopForm.imageUrl" class="avatar">
+              <i v-else class="el-icon-plus avatar-uploader-icon"></i>
             </el-upload>
-            <el-dialog :visible.sync="dialogVisible">
-              <img width="100%" :src="dialogImageUrl" alt="">
-            </el-dialog>
-            <!-- <el-input v-model="addShopForm.name" autocomplete="off"></el-input> -->
           </el-form-item>
           
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="dialogFormVisible = false">取 消</el-button>
-          <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+          <el-button type="primary" @click="addShop">确 定</el-button>
         </div>
       </el-dialog>
 
@@ -115,16 +84,9 @@
           <el-table-column prop="shopState" label="店铺状态"> </el-table-column>
 
           <el-table-column fixed="right" label="操作" width="120">
-            <template slot-scope="scope">
-              <el-button
-                @click.native.prevent="deleteRow(scope.$index, tableData)"
-                type="text"
-                size="small"
-              >
-                删除
-              </el-button>
-              <el-button type="text" size="small">修改</el-button>
-            </template>
+            <!-- <template slot-scope="scope">
+              <el-button type="text" size="small" @click.native.prevent="modification(scope.row)">修改</el-button>
+            </template> -->
           </el-table-column>
         </el-table>
       </el-main>
@@ -138,7 +100,7 @@
 </template>
 
 <script>
-// import axios from "axios";
+import axios from "axios";
 import Qs from "qs";
 
 export default {
@@ -151,34 +113,24 @@ export default {
         registerTime: ""
         
       },
-      dialogImageUrl: '',
-      dialogVisible: false,
-      disabled: false,
-
       dialogFormVisible: false,
         addShopForm: {
           platform: '',
           name:'',
-          phone:''
+          phone:'',
+          imageUrl: ''
         },
       tableData: [],
     };
   },
   methods: {
     //上传图片
-    handleRemove(file) {
-      console.log(file);
+    handleAvatarSuccess(res, file) {
+        this.addShopForm.imageUrl = URL.createObjectURL(file.raw);
     },
-    handlePictureCardPreview(file) {
-      this.dialogImageUrl = file.url;
-      this.dialogVisible = true;
-    },
-    handleDownload(file) {
-      console.log(file);
-    },
-    deleteRow(index, rows) {
-      rows.splice(index, 1);
-    },
+    // modification(index, rows) {
+      
+    // },
     handleCurrentChange(val) {
       console.log('当前页' + val);
     },
@@ -186,6 +138,77 @@ export default {
     headClass() {
       return "background:#eef1f6;";
     },
+    addShop(){
+      axios({
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        method: "post",
+        data: Qs.stringify({
+          "user_id": this.GLOBAL.userId,
+          "store_name": this.addShopForm.platform,
+          "address": this.addShopForm.name,
+          "phone": this.addShopForm.phone,
+          "img": this.addShopForm.imageUrl
+        }),
+
+        url: this.GLOBAL.hostUrl5 +"index/Store/store_add"
+      }).then(res => {
+        console.log(res);
+       if (res.data.code == 1 || res.data.code == "1") {
+         this.$notify({
+            message: "添加成功",
+            type: "success"
+          });
+          this.dialogFormVisible = false;
+        } else {
+          this.$notify.error({
+            message: "添加失败"
+          });
+        }
+      });
+    },
+    // 列表
+    tableList(){
+    axios({
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        method: "post",
+        data: Qs.stringify({
+           "user_id": this.GLOBAL.userId
+        }),
+
+        url: "http://www.bn.com/index.php/index/Store/store_list"
+      }).then(res => {
+        console.log(res);
+          const tableData = [];
+          const list = res.data.data.list;
+          for (let i = 0; i < list.length; i++) {
+             let stateCN = '';
+                if(list[i].state == 1) {
+                  stateCN = "正常"
+                } else if(list[i].state == 2) {
+                  stateCN = "审核中"
+                }else if(list[i].state == 3) {
+                  stateCN = "封号"
+                }else if(list[i].state == 4) {
+                  stateCN = "申请解封"
+                }else if(list[i].state == 5) {
+                  stateCN = "申请封号"
+                }else if(list[i].state == 6) {
+                  stateCN = "审核拒绝"
+                }
+            const data = {
+              shopName: list[i].store_name,
+              shopAddress: list[i].address,
+              shopState: stateCN
+            }
+            tableData.push(data);
+          }
+          this.tableData = tableData;
+      });
+  },
     mockedData(){
       const mocked = [
         {
@@ -207,32 +230,11 @@ export default {
       this.tableData = mocked;
     }
   },
+  
   mounted() {
     // this.mockedData();
-    axios({
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded"
-        },
-        method: "post",
-        data: Qs.stringify({
-           "user_id":'1'
-        }),
-
-        url: "http://www.bn.com/index.php/index/Store/store_list"
-      }).then(res => {
-        console.log(res);
-          const tableData = [];
-          const list = res.data.data.list;
-          for (let i = 0; i < list.length; i++) {
-            const data = {
-              shopName: list[i].store_name,
-              shopAddress: list[i].address,
-              shopState: list[i].state
-            }
-            tableData.push(data);
-          }
-          this.tableData = tableData;
-      });
+    this.tableList();
+    
   },
   components: {},
 };
@@ -259,8 +261,8 @@ export default {
   border: 1px solid rgb(209, 207, 207);
 }
 
-/* 上次图片 */
- .avatar-uploader .el-upload {
+/* 上传图片 */
+  .avatar-uploader .el-upload {
     border: 1px dashed #d9d9d9;
     border-radius: 6px;
     cursor: pointer;
@@ -271,16 +273,16 @@ export default {
     border-color: #409EFF;
   }
   .avatar-uploader-icon {
-    font-size: 20px;
+    font-size: 28px;
     color: #8c939d;
-    width: 100px;
-    height: 100px;
-    line-height: 100px;
+    width: 178px;
+    height: 178px;
+    line-height: 178px;
     text-align: center;
   }
   .avatar {
-    width: 100px;
-    height: 100px;
+    width: 178px;
+    height: 178px;
     display: block;
   }
 </style>

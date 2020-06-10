@@ -156,7 +156,7 @@
 </template>
 
 <script>
-// import axios from "axios";
+import axios from "axios";
 import Qs from "qs";
 
 export default {
@@ -189,6 +189,47 @@ export default {
     headClass() {
       return "background:#eef1f6;";
     },
+    tableList(){
+     axios({
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        method: "post",
+        data: Qs.stringify({
+          "user_id": this.GLOBAL.userId,
+        }),
+
+        url: this.GLOBAL.hostUrl5 +"index/Task/task_list"
+      }).then(res => {
+          const tableData = [];
+          const list = res.data.data.list;
+          for (let i = 0; i < list.length; i++) {
+                let stateCN = '';
+                if(list[i].state == 1) {
+                  stateCN = "未付款"
+                } else if(list[i].state == 2) {
+                  stateCN = "已付款"
+                }else if(list[i].state == 3) {
+                  stateCN = "审核不通过"
+                }else if(list[i].state == 4) {
+                  stateCN = "执行中"
+                }else if(list[i].state == 5) {
+                  stateCN = "完结"
+                }else if(list[i].state == 6) {
+                  stateCN = "任务冻结"
+                }
+            const data = { 
+              taskNumber: list[i].task_number,
+              commodityName : list[i].goods_name,
+              orderNumber: list[i].number,
+              taskState: stateCN,
+              time: list[i].time
+            }
+            tableData.push(data);
+          }
+          this.tableData = tableData;
+      });
+  },
     mockedData(){
       const mocked = [
         {
@@ -216,34 +257,10 @@ export default {
       this.tableData = mocked;
     }
   },
+  
    mounted() {
-    // this.mockedData();
-    // axios({
-    //     headers: {
-    //       "Content-Type": "application/x-www-form-urlencoded"
-    //     },
-    //     method: "post",
-    //     data: Qs.stringify({
-    //        "user_id":'1'
-    //     }),
-
-    //     url: "http://www.bn.com/index.php/index/Task/task_list"
-    //   }).then(res => {
-    //     console.log(res);
-    //       const tableData = [];
-    //       const list = res.data.data.list;
-    //       for (let i = 0; i < list.length; i++) {
-    //         const data = { 
-    //           taskNumber: list[i].task_number,
-    //           commodityName : list[i].goods_name,
-    //           orderNumber: list[i].number,
-    //           taskState: list[i].state,
-    //           time: list[i].time
-    //         }
-    //         tableData.push(data);
-    //       }
-    //       this.tableData = tableData;
-    //   });
+    this.tableList();
+    
   },
   components: {},
 };
