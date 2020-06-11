@@ -49,7 +49,7 @@
               class="avatar-uploader"
               action="http://www.bn.com/index.php/index/Store/img"
               :show-file-list="false"
-              :on-success="handleAvatarSuccess1">
+              :on-success="handleAvatarSuccess">
               <img v-if="addShopForm.imageUrl" :src="addShopForm.imageUrl" class="avatar">
               <i v-else class="el-icon-plus avatar-uploader-icon"></i>
             </el-upload>
@@ -65,11 +65,17 @@
       <el-row>
         <el-col :span="12" :offset="1">
           <div class="grid space">
-            <el-radio-group v-model="shopRadio" >
-              <div  v-for="(item,index) in shopType" :key="index">
-            <el-radio :label="index" >{{item.shop}}</el-radio>
-            </div>
-            </el-radio-group>
+            <el-radio v-model="shopRadio" label="1">备选项1</el-radio>
+          </div>
+        </el-col>
+        <el-col :span="12" :offset="1">
+          <div class="grid space">
+            <el-radio v-model="shopRadio" label="2">备选项2</el-radio>
+          </div>
+        </el-col>
+        <el-col :span="12" :offset="1">
+          <div class="grid space">
+            <el-radio v-model="shopRadio" label="3">备选项3</el-radio>
           </div>
         </el-col>
       </el-row>
@@ -77,17 +83,16 @@
       <el-row>
         <el-col :span="22" :offset="1"><div class="grid bg-blue">第二步:选择任务类型</div></el-col>
       </el-row>
-      
       <el-row>
         <el-col :span="12" :offset="1">
-                      <el-radio-group v-model="typeRadioA" >
-              <div  v-for="(item,index) in taskType" :key="index" class="grid space">
-            <el-radio :label="item.typeContent" >{{item.typeContent}}</el-radio>
-            </div>
-            </el-radio-group>
-          <!-- <div class="grid space">
-            <el-radio v-model="typeRadio" :label="index">{{item.typeContent}}</el-radio>
-          </div> -->
+          <div class="grid space">
+            <el-radio v-model="typeRadio" label="1">拼多多(普通垫付任务)</el-radio>
+          </div>
+        </el-col>
+        <el-col :span="12" :offset="1">
+          <div class="grid space">
+            <el-radio v-model="typeRadio" label="2">拼多多手机活动任务(限时秒杀等拼多多活动任务发布入口)</el-radio>
+          </div>
         </el-col>
       </el-row>
 
@@ -106,7 +111,7 @@
     
     <el-row>
       <el-col :span="12" :offset="10"><div class="grid">
-         <el-button style="margin-top: 12px;" @click="next" type="primary" plain>下一步</el-button> 
+        <el-button style="margin-top: 12px;" @click="next" type="primary" plain>下一步</el-button>         
       </div></el-col>
     </el-row>
     </div>
@@ -145,7 +150,7 @@
               class="avatar-uploader"
               action="http://www.bn.com/index.php/index/Store/img"
               :show-file-list="false"
-              :on-success="handleAvatarSuccess2">
+              :on-success="handleAvatarSuccess">
               <img v-if="typeForm.imageUrl" :src="typeForm.imageUrl" class="avatar">
               <i v-else class="el-icon-plus avatar-uploader-icon"></i>
             </el-upload>
@@ -199,7 +204,6 @@
             <el-select v-model="typeForm.commodityLocation" placeholder="请选择">
               <el-option label="开团" value="kai"></el-option>
               <el-option label="参团" value="can"></el-option>
-              <el-option label="单独购买" value="kai"></el-option>
             </el-select>
           </el-form-item>
         </el-col>
@@ -234,7 +238,7 @@
       <el-row>
           <el-col :span="22" :offset="1"><div class="grid margin1">
             <el-form-item label="选择任务类型" label-width="160px">
-            <el-radio v-model="typeForm.typeRadio" label="2">指定文字好评任务 <span class="gray">（指定文字好评任务佣金+0.1金/单）</span><span class="red"> 如果商家要求买手必须选择文字评价，建议选择“指定文字”好评</span></el-radio>
+            <el-radio v-model="typeForm.typeRadio1" label="1">指定文字好评任务 <span class="gray">（指定文字好评任务佣金+0.1金/单）</span><span class="red"> 如果商家要求买手必须选择文字评价，建议选择“指定文字”好评</span></el-radio>
           </el-form-item>
           
           <div style="box-shadow: rgba(0, 0, 0, 0.1) 0px 2px 4px;margin:20px; padding:10px 0">
@@ -248,15 +252,6 @@
             </el-input>
             <span class="red"> (此处填写多少单即为多少个买家接任务)</span>
           </el-form-item>
-
-          <el-form-item label="*指定文字" label-width="160px">
-            <el-input
-              type="textarea"
-              :rows="2"
-              placeholder="请输入指定文字"
-              v-model="typeForm.textarea">
-            </el-input>
-          </el-form-item>
           </div>
 
           </div></el-col>
@@ -265,7 +260,7 @@
       <el-row>
           <el-col :span="22" :offset="1"><div class="grid margin1">
             <el-form-item label="选择任务类型" label-width="160px">
-            <el-radio v-model="typeForm.typeRadio" label="3">指定图片好评任务</el-radio>
+            <el-radio v-model="typeForm.typeRadio2" label="1">指定图片好评任务</el-radio>
           </el-form-item>
 
            <div style="box-shadow: rgba(0, 0, 0, 0.1) 0px 2px 4px;margin:20px; padding:10px 0">
@@ -293,7 +288,7 @@
             <el-upload
               action="http://www.bn.com/index.php/index/Store/img"
               list-type="picture-card"
-              :on-preview="handlePictureCardPreview1"
+              :on-preview="handlePictureCardPreview"
               :on-remove="handleRemove">
               <i class="el-icon-plus"></i>
             </el-upload>
@@ -308,7 +303,7 @@
               type="textarea"
               :rows="2"
               placeholder="请输入评价描述"
-              v-model="typeForm.textarea1">
+              v-model="typeForm.textarea">
             </el-input>
           </el-form-item>
 
@@ -377,7 +372,7 @@
           type="textarea"
           :rows="2"
           placeholder="重要！如果对买手有特别的要求，请在备注里注明，买手在做任务时会看到，最多不能超过100字(任务备注只是商家要求，我们只能做到传达给买手但不会强制买手按要求执行)"
-          v-model="typeForm.textarea2">
+          v-model="typeForm.textareaOne">
         </el-input>
       </el-form-item>
 
@@ -408,7 +403,7 @@
 
       <el-row :gutter="20" style="margin-top:70px; padding:40px 0;">
           <el-col :span="10"><div class="grid border">
-              <el-button type="warning" @click="pay">支付</el-button>        
+              <el-button type="warning" @click="next">支付</el-button>        
           </div></el-col>
       </el-row>
 
@@ -445,11 +440,9 @@ export default {
   name: "publish",
   data() {
     return {
-      taskType: [],
-      shopType: [],
       shopChecked:'',
-      shopRadio: '',
-      typeRadioA:'',
+      shopRadio: '1',
+      typeRadio: '',
       checked1: '',
 
       addShopForm: {
@@ -463,16 +456,17 @@ export default {
           commodityLinkInput: '',
           merchantNameInput: '',
           imageUrl: '',
-          imageUrl1:'',
           unitPrice: '',
           price: '',
           pieces: '',
-          commodityLocation: '1',
+          commodityLocation: '',
           keywordInput: '',
           piecesInput: '',
           keywordOneInput: '',
           piecesOneInput: '',
+          typeRadio1: '',
           typeRadio: '',
+          typeRadio2: '',
           keywordTwoInput: '',
           piecesTwoInput: '',
           skuInput: '',
@@ -481,12 +475,11 @@ export default {
           textarea: '',
           publishChecked: true,
           publishDate:'',
-          startTime: '111',
-          endTime: '111',
+          startTime: new Date(2016, 9, 10, 18, 40),
+          endTime: new Date(2016, 9, 10, 18, 40),
           number: '',
           chatradio: '',
-          textarea1:'',
-          textarea2: ''
+          textareaOne:'' 
         },
       money: '2.4',
       active: 0,
@@ -502,19 +495,9 @@ export default {
        handleRemove(file, fileList) {
         console.log(file, fileList);
       },
-      handlePictureCardPreview1(res,file) {
-        console.log(res,file)
-        this.dialogImageUrl = URL.createObjectURL(file.raw);
+      handlePictureCardPreview(file) {
+        this.dialogImageUrl = file.url;
         this.dialogVisible = true;
-      },
-      handleAvatarSuccess1(res,file) {
-        this.addShopForm.imageUrl =URL.createObjectURL(file.raw);
-        this.dialogVisible = true;
-      },
-      handleAvatarSuccess2(res,file){
-        console.log(res,file)
-        this.typeForm.imageUrl1 = res.data;
-        this.typeForm.imageUrl = URL.createObjectURL(file.raw);
       },
     next() {
       this.selected++;
@@ -522,56 +505,6 @@ export default {
         this.active = 0; 
         this.selected = 0;
       }
-    },
-    // 支付
-    pay(){
-      console.log(this.typeRadioA)
-       axios({
-       headers: {
-          "Content-Type": "application/x-www-form-urlencoded"
-        },
-        method: "post",
-        data: Qs.stringify({
-          'user_id': this.GLOBAL.userId,
-          "goods_name": this.typeForm.merchantNameInput,
-          'goods_url': this.typeForm.commodityLinkInput,
-          'start_time': this.typeForm.startTime,
-          'end_time': this.typeForm.endTime,
-          'phone_price': this.typeForm.price,
-          'price_noe': this.typeForm.unitPrice,
-          'centons': this.typeForm.textarea2,
-          'price_number': this.typeForm.pieces,
-          'goods_state': this.typeForm.commodityLocation,
-
-          "keyword": this.typeForm.keywordInput,
-          'keyword1': this.typeForm.keywordOneInput,
-          'keyword2': this.typeForm.keywordTwoInput,
-
-          "keyword2_sku": this.typeForm.skuInput,
-
-          'keyword_number': this.typeForm.piecesInput,
-          'keyword1_number': this.typeForm.piecesOneInput,
-          'keyword2_number': this.typeForm.piecesTwoInput,
-
-          'keyword1_centons': this.typeForm.textarea,
-          'keyword2_centons': this.typeForm.textarea1,
-
-          'task_type_state': this.typeForm.typeRadio,
-          'wechat_centons': this.typeForm.chatradio,
-          'img': this.typeForm.imageUrl1,
-          'image':"store/2020061135ad68bab5140670486b448dab1e9eeb.png",
-          'store_id': "1", 
-          "type": this.shopType[this.shopRadio].type,  
-          'task_type': this.typeRadioA,
-
-
-        }),
-
-        url: this.GLOBAL.hostUrl5 + "index/task/task_add"
-      }).then(res => {
-        console.log(res);
-          
-      });
     },
     pre(){
       this.selected--;
@@ -615,64 +548,7 @@ export default {
           });
         }
       });
-    },
-    // 店铺名
-    shopName(){
-      axios({
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded"
-        },
-        method: "post",
-        data: Qs.stringify({
-          user_id: this.GLOBAL.userId
-        }),
-
-        url: this.GLOBAL.hostUrl5 + "index/Store/store_list"
-      }).then(res => {
-        console.log(res);
-        const tableData = [];
-          const dataList = res.data.data.list;
-          for (let i = 0; i < dataList.length; i++) {
-            const data = {
-              shop: dataList[i].store_name,
-              type: dataList[i].type
-            }
-            tableData.push(data);
-          }
-          this.shopType = tableData;
-      });
-    },
-    //  任务类型
-     task(){
-       axios({
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded"
-        },
-        method: "post",
-        data: Qs.stringify({
-          user_id: this.GLOBAL.userId,
-          "name": ''
-        }),
-
-        url: this.GLOBAL.hostUrl5 + "index/Store/type_list"
-      }).then(res => {
-        console.log(res);
-        const tableData = [];
-          const dataList = res.data.data;
-          for (let i = 0; i < dataList.length; i++) {
-            const data = {
-              typeContent: dataList[i].name,
-            }
-            tableData.push(data);
-          }
-          this.taskType = tableData;
-      });
     }
-  },
-  mounted() {
-    // this.mockedData();
-    this.task();
-    this.shopName();
   },
   components: {
   }
