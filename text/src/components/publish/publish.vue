@@ -97,7 +97,7 @@
       <el-row>
         <el-col :span="14" :offset="1">
           <div class="grid space">
-            <el-checkbox v-model="checked1">平台系统返款（收取0.5元/单的服务费）</el-checkbox>
+            <el-checkbox v-model="platformChecked">平台系统返款（收取0.5元/单的服务费）</el-checkbox>
           </div>
         </el-col>
       </el-row>
@@ -196,10 +196,13 @@
       <el-row>
         <el-col :span="14" :offset="1">
           <el-form-item label="定位目标商品排序方式" label-width="160px">
-            <el-select v-model="typeForm.commodityLocation" placeholder="请选择">
-              <el-option label="开团" value="kai"></el-option>
-              <el-option label="参团" value="can"></el-option>
-              <el-option label="单独购买" value="kai"></el-option>
+             <el-select v-model="typeForm.commodityLocation" placeholder="请选择">
+              <el-option
+                v-for="item in options"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
             </el-select>
           </el-form-item>
         </el-col>
@@ -447,10 +450,10 @@ export default {
     return {
       taskType: [],
       shopType: [],
-      shopChecked:'',
+      shopChecked: true,
       shopRadio: '',
       typeRadioA:'',
-      checked1: '',
+      platformChecked: true,
 
       addShopForm: {
         platform: "",
@@ -458,7 +461,16 @@ export default {
         phone: "",
         imageUrl: ""
       },
-
+       options: [{
+          value: '1',
+          label: '开团'
+        }, {
+          value: '2',
+          label: '参团'
+        }, {
+          value: '3',
+          label: '单独购买'
+        }],
       typeForm: {
           commodityLinkInput: '',
           merchantNameInput: '',
@@ -467,7 +479,7 @@ export default {
           unitPrice: '',
           price: '',
           pieces: '',
-          commodityLocation: '1',
+          commodityLocation: '',
           keywordInput: '',
           piecesInput: '',
           keywordOneInput: '',
@@ -523,9 +535,27 @@ export default {
         this.selected = 0;
       }
     },
+    formatTimer(time) {
+      let date = new Date(time);
+      let y = date.getFullYear();
+      let MM = date.getMonth() + 1;
+      MM = MM < 10 ? "0" + MM : MM;
+      let d = date.getDate();
+      d = d < 10 ? "0" + d : d;
+      let h = date.getHours();
+      h = h < 10 ? "0" + h : h;
+      let m = date.getMinutes();
+      m = m < 10 ? "0" + m : m;
+      let s = date.getSeconds();
+      s = s < 10 ? "0" + s : s;
+      return h + ":" + m + ":" + s;
+    },
     // 支付
     pay(){
-      console.log(this.typeRadioA)
+      console.log(this.typeForm.dialogImageUrl);
+      let startTimeStr = this.formatTimer(this.typeForm.startTime);
+      let endTimeStr = this.formatTimer(this.typeForm.endTime);
+      
        axios({
        headers: {
           "Content-Type": "application/x-www-form-urlencoded"
@@ -535,8 +565,8 @@ export default {
           'user_id': this.GLOBAL.userId,
           "goods_name": this.typeForm.merchantNameInput,
           'goods_url': this.typeForm.commodityLinkInput,
-          'start_time': this.typeForm.startTime,
-          'end_time': this.typeForm.endTime,
+          'start_time': startTimeStr,
+          'end_time': endTimeStr,
           'phone_price': this.typeForm.price,
           'price_noe': this.typeForm.unitPrice,
           'centons': this.typeForm.textarea2,
