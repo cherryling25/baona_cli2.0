@@ -214,7 +214,7 @@
             <el-radio v-model="typeForm.typeRadio" label="1">关键词/链接/多多进宝 <span class="red"> 选择这个就是默认评价，买手不会评价文字</span></el-radio>
           </el-form-item>
 
-          <div style="box-shadow: rgba(0, 0, 0, 0.1) 0px 2px 4px;margin:20px; padding:10px 0">
+          <div style="box-shadow: rgba(0, 0, 0, 0.1) 0px 2px 4px;margin:20px; padding:10px 0" v-if="typeForm.typeRadio =='1'">
           <el-form-item label="*关键词/链接/多多进宝" label-width="160px">
             <el-input placeholder="请输入关键词" v-model="typeForm.keywordInput" style="width:20%;"></el-input>
           </el-form-item>
@@ -226,9 +226,9 @@
             <span class="red"> (此处填写多少单即为多少个买家接任务)</span>
           </el-form-item>
 
-           <el-form-item label-width="160px">
-               <el-button plain>添加搜索关键词</el-button>
-           </el-form-item> 
+           <!-- <el-form-item label-width="160px">
+               <el-button plain @click="addKeyWord">添加搜索关键词</el-button>
+           </el-form-item>  -->
           </div>
         
           </div></el-col>
@@ -240,7 +240,7 @@
             <el-radio v-model="typeForm.typeRadio" label="2">指定文字好评任务 <span class="gray">（指定文字好评任务佣金+0.1金/单）</span><span class="red"> 如果商家要求买手必须选择文字评价，建议选择“指定文字”好评</span></el-radio>
           </el-form-item>
           
-          <div style="box-shadow: rgba(0, 0, 0, 0.1) 0px 2px 4px;margin:20px; padding:10px 0">
+          <div style="box-shadow: rgba(0, 0, 0, 0.1) 0px 2px 4px;margin:20px; padding:10px 0" v-if="typeForm.typeRadio =='2'">
           <el-form-item label="*关键词/链接/多多进宝" label-width="160px">
             <el-input placeholder="请输入关键词" v-model="typeForm.keywordOneInput" style="width:20%;"></el-input>
           </el-form-item>
@@ -271,9 +271,7 @@
             <el-radio v-model="typeForm.typeRadio" label="3">指定图片好评任务</el-radio>
           </el-form-item>
 
-           <div style="box-shadow: rgba(0, 0, 0, 0.1) 0px 2px 4px;margin:20px; padding:10px 0">
-             <!-- （指定图片好评任务佣金 +0.2金/单，为规避风险，买家无法直接复制文字内容，必须手工输入。因此买家实际的评价内容不保证100%与您的评价要求保持一致） -->
-         
+           <div style="box-shadow: rgba(0, 0, 0, 0.1) 0px 2px 4px;margin:20px; padding:10px 0" v-if="typeForm.typeRadio =='3'">
             <span class="red gray" style="font-size:12px;margin-left:15px;">（指定图片好评任务佣金 +0.2金/单，为规避风险，买家无法直接复制文字内容，必须手工输入。因此买家实际的评价内容不保证100%与您的评价要求保持一致）</span>
 
           <el-form-item label="搜索关键词">
@@ -315,9 +313,9 @@
             </el-input>
           </el-form-item>
 
-          <el-form-item>
+          <!-- <el-form-item>
               <el-button plain>增加指定图片任务</el-button>
-          </el-form-item> 
+          </el-form-item>  -->
 
           </div>
           </div></el-col> 
@@ -509,25 +507,27 @@ export default {
 
   methods: {
     onSubmit() {
-        console.log('submit!');
-      },
-       handleRemove(file, fileList) {
-        console.log(file, fileList);
-      },
-      handlePictureCardPreview1(res,file) {
-        console.log(res,file)
-        this.dialogImageUrl = URL.createObjectURL(file.raw);
-        this.dialogVisible = true;
-      },
-      handleAvatarSuccess1(res,file) {
-        this.addShopForm.imageUrl =URL.createObjectURL(file.raw);
-        this.dialogVisible = true;
-      },
-      handleAvatarSuccess2(res,file){
-        console.log(res,file)
-        this.typeForm.imageUrl1 = res.data;
-        this.typeForm.imageUrl = URL.createObjectURL(file.raw);
-      },
+      console.log('submit!');
+    },
+      handleRemove(file, fileList) {
+      console.log(file, fileList);
+    },
+    handlePictureCardPreview1(res,file) {
+      console.log(res,file)
+      this.dialogImageUrl = URL.createObjectURL(file.raw);
+      this.dialogVisible = true;
+    },
+    handleAvatarSuccess1(res,file) {
+      this.addShopForm.imageUrl =URL.createObjectURL(file.raw);
+      this.dialogVisible = true;
+    },
+    handleAvatarSuccess2(res,file){
+      console.log(res,file)
+      this.typeForm.imageUrl1 = res.data;
+      this.typeForm.imageUrl = URL.createObjectURL(file.raw);
+    },
+   
+    // 下一步
     next() {
       this.selected++;
       if (this.active++ > 2) { 
@@ -535,6 +535,7 @@ export default {
         this.selected = 0;
       }
     },
+    // 格式化时间
     formatTimer(time) {
       let date = new Date(time);
       let y = date.getFullYear();
@@ -553,6 +554,7 @@ export default {
     // 支付
     pay(){
       console.log(this.typeForm.dialogImageUrl);
+      console.log(this.typeForm.typeRadio);
       let startTimeStr = this.formatTimer(this.typeForm.startTime);
       let endTimeStr = this.formatTimer(this.typeForm.endTime);
       
@@ -589,9 +591,10 @@ export default {
           'task_type_state': this.typeForm.typeRadio,
           'wechat_centons': this.typeForm.chatradio,
           'img': this.typeForm.imageUrl1,
-          'image':"store/2020061135ad68bab5140670486b448dab1e9eeb.png",
+          'image':this.typeForm.dialogImageUrl,
+          // 'image':"store/2020061135ad68bab5140670486b448dab1e9eeb.png",
           'store_id': "1", 
-          "type": this.shopType[this.shopRadio].type,  
+          // "type": this.shopType[this.shopRadio].type,  
           'task_type': this.typeRadioA,
 
 
@@ -700,7 +703,6 @@ export default {
     }
   },
   mounted() {
-    // this.mockedData();
     this.task();
     this.shopName();
   },
